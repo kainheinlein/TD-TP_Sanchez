@@ -22,6 +22,8 @@ namespace Entidad_BE
         LoginFail = 12,
         NoSesion = 13,
         CambioIdioma = 14,
-        RestauracionUsuario = 15
+        AltaIdioma = 15,
+        ModificacionIdioma = 16,
+        RestauracionUsuario = 17
     }
 }

@@ -65,6 +65,12 @@
     <Compile Include="frmHistorialUsuario.Designer.cs">
       <DependentUpon>frmHistorialUsuario.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmIdiomas.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmIdiomas.Designer.cs">
+      <DependentUpon>frmIdiomas.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmModClave.cs">
       <SubType>Form</SubType>
     </Compile>

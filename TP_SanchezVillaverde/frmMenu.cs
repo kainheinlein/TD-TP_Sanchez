@@ -246,8 +246,17 @@ namespace TP_SanchezVillaverde
 
         private void hToolStripMenuItem_Click(object sender, System.EventArgs e)
         {
-            frmHistorialUsuario frmhistorial = new frmHistorialUsuario(SessionManager.GetInstance.UsuarioActual().cod);
+            frmHistorialUsuario frmhistorial = new frmHistorialUsuario();
             frmhistorial.ShowDialog();
+        }
+
+        private void idiomasToolStripMenuItem_Click(object sender, System.EventArgs e)
+        {
+            frmIdiomas frmIdiomas = new frmIdiomas();
+            frmIdiomas.ShowDialog();
+            //Puede haberse dado de alta un idioma: se rearma el menu de idiomas
+            CargarMenuIdiomas();
+            MarcarIdiomaActivo();
         }
     }
 }
