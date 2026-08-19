@@ -14,7 +14,7 @@ namespace TP_SanchezVillaverde
         PerfilBLL permisoBLL;
         BitacoraBLL bitacoraBLL = new BitacoraBLL();
         GestorDeIdioma gestorIdioma = GestorDeIdioma.GetInstance;
-        string PathFile = "GestionPerfiles";
+        //string PathFile = "GestionPerfiles";
 
         public frmGestionPerfiles()
         {

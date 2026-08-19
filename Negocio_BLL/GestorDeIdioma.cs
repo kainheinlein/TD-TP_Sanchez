@@ -58,6 +58,78 @@ namespace Negocio_BLL
             return idiomaDAL.ObtenerIdiomas();
         }
 
+        public System.Data.DataTable ObtenerTablaTraducciones(int idIdioma)
+        {
+            return idiomaDAL.ObtenerTablaTraducciones(idIdioma);
+        }
+
+        /// <summary>
+        /// Da de alta un idioma. Si se indica un archivo de traducciones
+        /// (formato CLAVE;Texto) se aplican sus textos sobre el idioma nuevo.
+        /// Devuelve la cantidad de traducciones importadas desde el archivo.
+        /// </summary>
+        public int AgregarIdioma(string codigo, string nombre, string rutaArchivo = null)
+        {
+            codigo = (codigo ?? "").Trim().ToUpper();
+            nombre = (nombre ?? "").Trim();
+
+            if (codigo == "" || nombre == "")
+            {
+                throw new System.ArgumentException(Traducir("IDI_ERR_DATOS"));
+            }
+            if (codigo.Length > 5 || nombre.Length > 50)
+            {
+                throw new System.ArgumentException(Traducir("IDI_ERR_LONGITUD"));
+            }
+            if (ObtenerIdiomas().Exists(i => i.Codigo == codigo))
+            {
+                throw new System.ArgumentException(Traducir("IDI_ERR_CODIGO_EXISTE"));
+            }
+
+            //El archivo se lee ANTES de crear el idioma: si esta mal formado
+            //no queda un idioma a medias en la base
+            Dictionary<string, string> archivo = null;
+            if (!string.IsNullOrEmpty(rutaArchivo))
+            {
+                archivo = LectorTraducciones.LeerArchivo(rutaArchivo);
+            }
+
+            //El idioma nuevo nace con las traducciones del idioma base copiadas
+            //como punto de partida, para que la interfaz nunca quede sin textos
+            idiomaDAL.CrearIdioma(codigo, nombre, IdiomaPorDefecto);
+
+            if (archivo == null) { return 0; }
+
+            //Se aplican solo las claves que existen en el catalogo del idioma
+            IdiomaBE nuevo = ObtenerIdiomas().Find(i => i.Codigo == codigo);
+            Dictionary<string, string> catalogo = idiomaDAL.ObtenerTraducciones(nuevo.Id);
+            Dictionary<string, string> aplicables = new Dictionary<string, string>();
+            foreach (KeyValuePair<string, string> par in archivo)
+            {
+                if (catalogo.ContainsKey(par.Key))
+                {
+                    aplicables[par.Key] = par.Value;
+                }
+            }
+            GuardarTraducciones(nuevo.Id, aplicables);
+            return aplicables.Count;
+        }
+
+        public void GuardarTraducciones(int idIdioma, Dictionary<string, string> cambios)
+        {
+            foreach (KeyValuePair<string, string> cambio in cambios)
+            {
+                idiomaDAL.ActualizarTraduccion(idIdioma, cambio.Key, cambio.Value);
+            }
+
+            //Si se edito el idioma activo se recarga el diccionario y se
+            //notifica a los observadores: las pantallas abiertas se actualizan
+            if (_idiomaActual != null && _idiomaActual.Id == idIdioma)
+            {
+                CambiarIdioma(_idiomaActual.Codigo);
+            }
+        }
+
         public void Suscribir(IObservadorIdioma observador)
         {
             if (!_observadores.Contains(observador))

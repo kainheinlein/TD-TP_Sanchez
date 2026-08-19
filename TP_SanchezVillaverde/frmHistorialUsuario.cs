@@ -15,12 +15,10 @@ namespace TP_SanchezVillaverde
 {
     public partial class frmHistorialUsuario : Form, IObservadorIdioma
     {
-        private readonly int usuarioId;
         private readonly HistorialUsuarioBLL historialBLL = new HistorialUsuarioBLL();
         private readonly GestorDeIdioma gestorIdioma = GestorDeIdioma.GetInstance;
-        public frmHistorialUsuario(int usuarioID)
+        public frmHistorialUsuario()
         {
-            this.usuarioId = usuarioID;
             InitializeComponent();
         }
 
